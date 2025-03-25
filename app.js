@@ -14,6 +14,7 @@ const authRoutes= require('./routes/auth')
 const profileRoutes = require('./routes/profile')
 const cartItemsRoutes = require('./routes/cartitem')
 const cartGroupRoutes = require('./routes/cartgroup')
+const cartMembershipsRoutes =require('./routes/membership')
 const connectDB = require('./config/db');
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/auth', authRoutes);
 app.use('/auth',profileRoutes);
 app.use('/api/cart-items',cartItemsRoutes)
 app.use("/api/cart-groups", cartGroupRoutes);
+app.use('/api/memberships',cartMembershipsRoutes)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

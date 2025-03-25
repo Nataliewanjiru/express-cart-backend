@@ -4,8 +4,9 @@ const socketIO = require("socket.io");
 const CartGroup = require("../models/cartGroup");
 const mongoose = require('mongoose');
 const User = require("../models/user")
-const jwt = require('jsonwebtoken');
+const CartItem=require('../models/cartItems')
 const { getUserId } = require("../public/javascripts/getUserfunction");
+const Membership = require("../models/membership")
 
 
 const app = express();
@@ -48,6 +49,7 @@ router.post("/", async (req, res) => {
 
     await newGroup.save();
     await User.findByIdAndUpdate(userId, { $push: { groups: newGroup._id } });
+    await Membership.create({ user: userId, group: newGroup._id, role: "admin" });
     io.emit("new group", newGroup); // Notify clients
 
     res.status(201).json({ message: "Group created successfully", newGroup });
@@ -123,6 +125,7 @@ router.put("/:groupId/add-member/:userId", async (req, res) => {
       group.members.push(userId);
       await group.save();
       await User.findByIdAndUpdate(userId, { $push: { groups: groupId } });
+      await Membership.create({ user: userId, group: group._id});
       io.emit("update group", group); // Notify clients
     }
 
@@ -143,6 +146,7 @@ router.put("/:groupId/remove-member/:userId", async (req, res) => {
     group.members = group.members.filter((member) => member.toString() !== userId);
     await group.save();
     await User.findByIdAndUpdate(userId, { $pull: { groups: groupId } });
+    await Membership.deleteOne({ user: userId, group: group._id });
 
     io.emit("update group", group); // Notify clients
 
@@ -199,6 +203,8 @@ router.delete("/:groupId", async (req, res) => {
     if (!deletedGroup) return res.status(404).json({ message: "Group not found" });
      
     await User.updateMany({ groups: groupId }, { $pull: { groups: groupId } });
+    await CartItem.deleteMany({ group: groupId });
+    await Membership.deleteMany({ groups: groupId });
     io.emit("delete group", groupId); // Notify clients
     res.status(200).json({ message: "Group deleted successfully" });
   } catch (error) {
