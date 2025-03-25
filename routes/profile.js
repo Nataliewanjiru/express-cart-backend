@@ -20,8 +20,7 @@ router.get('/profile', async (req, res) => {
       }
 
       // Find the user by username (or ID) from the decoded token
-      const user = await User.findOne({ email: decoded.email }).select('-password'); // Exclude password
-console.log(user)
+      const user = await User.findOne({ email: decoded.email }).select('-password').populate("groups");; // Exclude password
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -33,5 +32,23 @@ console.log(user)
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.get("/searchprofile", async (req, res) => {
+  try {
+    const { name } = req.query;
+    if (!name) return res.status(400).json({ message: "Name is required" });
+
+    const users = await User.find({ name: new RegExp(name, "i") }).select("name email profilePicture");
+    
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+    
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 module.exports = router;

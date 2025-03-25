@@ -5,11 +5,15 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
 const cors = require('cors');
+const http = require('http');
+const socketIO = require('socket.io');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const authRoutes= require('./routes/auth')
 const profileRoutes = require('./routes/profile')
+const cartItemsRoutes = require('./routes/cartitem')
+const cartGroupRoutes = require('./routes/cartgroup')
 const connectDB = require('./config/db');
 
 const app = express();
@@ -34,6 +38,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRoutes);
 app.use('/auth',profileRoutes);
+app.use('/api/cart-items',cartItemsRoutes)
+app.use("/api/cart-groups", cartGroupRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

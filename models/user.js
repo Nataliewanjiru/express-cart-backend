@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   userpicture:{type:String,  default:"https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar…"},
-  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }]
+  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'cartGroup' }]
 },
 { timestamps: true } 
 );
