@@ -35,10 +35,15 @@ io.on("connection", (socket) => {
 
 /* Create a new group */
 router.post("/", async (req, res) => {
+  console.log(req.headers)
   try {
     const userId = await getUserId(req)
+    console.log(userId)
+    if (!userId) { // Check if userId is valid
+      return res.status(401).json({ message: "Unauthorized" }); // Or 403 Forbidden, depending on the scenario
+    }
     const { groupName, description, groupImage } = req.body;
-
+     
     const newGroup = new CartGroup({
       groupName,
       description,
@@ -61,19 +66,19 @@ router.post("/", async (req, res) => {
 /** 📜 Get all groups related to the logged-in user */
 router.get("/", async (req, res) => {
     try {
-       const userId = await getUserId(req)
-       console.log(userId)
-       console.log("User ID Type:", typeof userId);
+       const userId = await getUserId(req) 
+     
   
        const groups = await CartGroup.find({ members: userId }).populate("members cartItems");
        if(groups.length > 0){
+        console.log(groups)
          res.status(200).json(groups);
        }else{
          res.status(200).json({ message: "No groups found" });
          console.log("no groups")
        }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message});
     }
   });
   
