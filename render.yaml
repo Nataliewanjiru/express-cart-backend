@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: my-express-api
-    env: node
-    buildCommand: npm install
-    startCommand: node ./bin/www
-    nodeVersion: 18
-    envVars:
-      - key: MONGODB_URI
