@@ -83,7 +83,22 @@ router.get("/", async (req, res) => {
   });
   
 
-/* Get a single group by ID */
+/* Search groups by name */
+router.get("/search", async (req, res) => {
+    try {
+        const { name } = req.query; // Get the search query parameter
+        const groups = await CartGroup.find({ groupName: { $regex: name, $options: 'i' } }).populate("members cartItems");
+        
+        if (groups.length > 0) {
+            res.status(200).json(groups);
+        } else {
+            res.status(200).json({ message: "No groups found" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 router.get("/:groupId", async (req, res) => {
   try {
     const { groupId } = req.params;
