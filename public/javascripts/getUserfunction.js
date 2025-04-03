@@ -12,14 +12,13 @@ function getUserId(req) {
     }
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-      if (err) {
-        console.error("Invalid token:", err);
-        return reject({ status: 403, message: "Invalid token" });
-      }
-
-      console.log("Decoded token:", decoded)
-
       try {
+        if (err) {
+          console.error("Invalid token:", err);
+          return reject({ status: 403, message: "Invalid token" });
+        }
+        console.log("Decoded token:", decoded)
+
         const user = await User.findOne({ email: decoded.email }).select("-password");
 
         if (!user) {
@@ -28,7 +27,8 @@ function getUserId(req) {
         }
 
         resolve(user.id);
-      } catch (error) {
+      } 
+      catch (error) {
         console.error("Database error:", error);
         reject({ status: 500, message: error.message });
       }
