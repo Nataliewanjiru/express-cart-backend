@@ -50,5 +50,18 @@ router.get("/searchprofile", async (req, res) => {
   }
 });
 
+router.get('/users', async (req, res) => {
+   try {
+     const userIds = req.query.userId; // Get the userIds from the query string
+     if (!userIds) {
+     return res.status(400).json({message: "UserIds are required."})
+     }
+     const userArray = Array.isArray(userIds) ? userIds : [userIds]; 
+     const users = await User.find({ _id: { $in: userArray } });
+     res.status(200).json(users);
+   } catch (error) {
+     res.status(500).json({ error: error.message });
+   }
+  });
 
 module.exports = router;

@@ -72,7 +72,7 @@ router.get("/", async (req, res) => {
        const groups = await CartGroup.find({ members: userId }).populate("members cartItems");
        if(groups.length > 0){
         console.log(groups)
-         res.status(200).json(groups);
+         res.status(200).json([groups]);
        }else{
          res.status(200).json({ message: "No groups found" });
          console.log("no groups")
@@ -90,7 +90,7 @@ router.get("/:groupId", async (req, res) => {
 
     if (!group) return res.status(404).json({ message: "Group not found" });
 
-    res.status(200).json(group);
+    res.status(200).json([group]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
