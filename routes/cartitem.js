@@ -48,7 +48,7 @@ io.on('connection',(stream)=>{
 router.post("/:groupId/addItem", async (req, res) => {
     try {
       const{groupId}=req.params;
-      const {product, quantity} = req.body;
+      const {product,image,quantity,size,color,price} = req.body;
     
       const group = await CartGroup.findById(groupId);
       if (!group) return res.status(404).json({ message: "Group not found" });
