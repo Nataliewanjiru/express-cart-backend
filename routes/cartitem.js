@@ -57,7 +57,11 @@ router.post("/:groupId/addItem", async (req, res) => {
   
       const newItem = new CartItem({
         product,
+        image,
         quantity,
+        size,
+        color,
+        price,
         addedBy:[userId],
         group:[groupId],
         addedAt: new Date(),
